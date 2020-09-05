@@ -5,28 +5,6 @@ import copy
 
 from draw import draw_path, draw_bounding_box
 
-def choose_next_move(last_move):
-    moves = list('rlud')
-    assert last_move in moves
-
-    if last_move == 'r':
-        return random.choice(list('rud'))
-    if last_move == 'l':
-        return random.choice(list('lud'))
-    if last_move == 'u':
-        return random.choice(list('rul'))
-    if last_move == 'd':
-        return random.choice(list('rld'))
-
-    raise ValueError('Pretty sure I asserted that it shouldn\'t reach this')
-
-def generate_path():
-    path = 'r'
-    for i in range(23):
-        last_move = path[-1]
-        path += choose_next_move(last_move)
-    return path
-
 def where_would_i_be(where_im_at, move):
     assert move in list('rldu')
     assert len(where_im_at) == 2
@@ -114,7 +92,6 @@ def generate_path_recursive(length, path='r', where_ive_been=None, where_im_at=N
             break
 
     return extended_path
-
 generate_path_recursive.best_len = None
 
 # These parameters that should come from the command line
