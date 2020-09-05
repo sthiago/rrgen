@@ -1,6 +1,7 @@
 import sys
 import turtle
 import random
+import copy
 
 from draw import draw_path, draw_bounding_box
 
@@ -39,9 +40,37 @@ def where_would_i_be(where_im_at, move):
     if move == 'd':
         return (where_im_at[0], where_im_at[1]-1)
 
-def generate_path_recursive(path='r', where_ive_been=None, where_im_at=None):
-    # if path == 'ruruurdrrdlldldrdruru':
-    print(path)
+def is_out_of_bounds(position, map_height, map_width):
+    w, h = map_width, map_height
+    x, y = position[0], position[1]
+
+
+    if 0 <= x < w and 0 <= y < h:
+        return False
+
+    # print (x, y)
+    return True
+
+def generate_path_recursive(length, path='r', where_ive_been=None, where_im_at=None):
+    if generate_path_recursive.best_len == None:
+        generate_path_recursive.best_len = len(path)
+    elif len(path) > generate_path_recursive.best_len:
+        generate_path_recursive.best_len = len(path)
+        print(
+            str(generate_path_recursive.best_len).zfill(3),
+            str(len(path)).zfill(3),
+            path,
+        )
+
+    global t
+    global cell_size
+    t.reset()
+    t.speed('fastest')
+    t.penup()
+    t.setposition(0, 0)
+    draw_path(t, path, cell_size)
+    turtle.update()
+
 
     # List with position in the grid that i've already passed by.
     if where_ive_been == None:
@@ -56,7 +85,7 @@ def generate_path_recursive(path='r', where_ive_been=None, where_im_at=None):
 
     # I think I need a stop condition here.
     # For now, the condition will just be a length
-    if len(path) >= 25:
+    if len(path) >= length-1:
         return path
 
     # Try and generate the next move recursively
@@ -67,11 +96,18 @@ def generate_path_recursive(path='r', where_ive_been=None, where_im_at=None):
         candidate_move = possible_moves.pop()
         where_id_be = where_would_i_be(where_im_at, candidate_move)
 
+        # print(path + candidate_move)
+
         # it'll overlap, skip it
         if where_id_be in where_ive_been:
             continue
 
-        extended_path = generate_path_recursive(path + candidate_move, where_ive_been, where_id_be)
+        # it's out of bounds, skip it
+        # but there's no need to test this if it is the very last move
+        if len(path) < length and is_out_of_bounds(where_id_be, map_height, map_width):
+            continue
+
+        extended_path = generate_path_recursive(length, path + candidate_move, copy.copy(where_ive_been), where_id_be)
 
         # if nothing went wrong furthen along, then we don't have to try anymore
         if extended_path != None:
@@ -79,7 +115,7 @@ def generate_path_recursive(path='r', where_ive_been=None, where_im_at=None):
 
     return extended_path
 
-
+generate_path_recursive.best_len = None
 
 # These parameters that should come from the command line
 
@@ -87,27 +123,27 @@ def generate_path_recursive(path='r', where_ive_been=None, where_im_at=None):
 cell_size = 25
 
 # Map width in cells
-map_width = 5
+map_width = 10
 
 # Map height in cells
-map_height = 5
+map_height = 10
+
+# Number of holes
+num_holes = 10
 
 # Wall thickness in pixels.
 wall_thickness = 1
 
 # screen = turtle.getscreen()
-# screen.setworldcoordinates(0, 0, map_width * cell_size, map_height * cell_size)
 
 t = turtle.Turtle()
-# t.setposition(0, (map_height-1) * cell_size)
-
-
-# path = 'rdldddrruluruurrdldrdldr'
-# path = 'rrullddrrddlulldlulldrdr'
+s = t.getscreen()
+s.setup(width=map_width * 50, height=map_height * 50)
+s.setworldcoordinates(-2, -2, map_width * cell_size + 4, map_height * cell_size + 4)
+turtle.tracer(0, 0)
 
 while True:
-    # seed = random.randrange(sys.maxsize)
-    seed = 7905049820465421464
+    seed = random.randrange(sys.maxsize)
     random.seed(seed)
     print("Seed:", seed)
 
@@ -116,15 +152,21 @@ while True:
     t.pensize(wall_thickness)
     t.penup()
 
-    path = generate_path_recursive()
+    draw_bounding_box(t, cell_size, map_height, map_width)
+    length = map_height * map_width
+    path = generate_path_recursive(length - num_holes)
+
+    # if path == None:
+    #     continue
+
     print("Path:", path)
     draw_path(t, path, cell_size)
 
-    break
     t.penup()
     t.setposition(0, 0)
+    turtle.update()
 
+    # break
 
-# t.hideturtle()
+t.hideturtle()
 turtle.exitonclick()
-# turtle.mainloop()
