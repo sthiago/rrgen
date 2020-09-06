@@ -13,7 +13,16 @@ class Node:
     def __str__(self):
         return f'({self.x}, {self.y})'
 
+    def __add__(self, other):
+        assert type(other) == Node
+        return Node(self.x + other.x, self.y + other.y)
+
+    def __sub__(self, other):
+        assert type(other) == Node
+        return Node(self.x - other.x, self.y - other.y)
+
     def __eq__(self, other):
+        assert type(other) == Node
         return (self.x, self.y) == (other.x, other.y)
 
     def __hash__(self):
@@ -22,6 +31,25 @@ class Node:
     def is_out_of_bounds(self, grid):
         assert type(grid) == Grid
         return not ((0 <= self.x < grid.width) and (0 <= self.y < grid.height))
+
+    def get_neighbors(self, grid):
+        assert type(grid) == Grid
+        neighbors = []
+        for direction in [Node(1, 0), Node(0, 1), Node(-1, 0), Node(0, -1)]:
+            neighbor = self + direction
+            if not neighbor.is_out_of_bounds(grid):
+                neighbors.append(neighbor)
+        return neighbors
+
+    def get_edges_to_neighbors(self, grid):
+        assert type(grid) == Grid
+        neighbors = self.get_neighbors(grid)
+        edges = []
+        for n in neighbors:
+            edges.append(Edge(self, n))
+            edges.append(Edge(n, self))
+        return edges
+
 
 class Edge:
     """Represents an edge in a 2-D grid graph."""
@@ -42,6 +70,18 @@ class Edge:
 
     def __hash__(self):
         return hash((self.src, self.dst))
+
+    def get_letter_repr(self):
+        direction = self.dst - self.src
+        if direction == Node(1, 0):
+            return 'r'
+        elif direction == Node(0, 1):
+            return 'u'
+        elif direction == Node(-1, 0):
+            return 'l'
+        elif direction == Node(0, -1):
+            return 'd'
+        return '?'
 
 class Grid:
     """A graph that represents a 2-D grid."""
@@ -76,9 +116,16 @@ class Grid:
         assert type(edge) == Edge
         self.edges.remove(edge)
 
+    def populate_edges(self):
+        for i in range(self.width):
+            for j in range(self.height):
+                node = Node(i, j)
+                for edge in node.get_edges_to_neighbors(grid):
+                    self.add_edge(edge)
+
 class Path:
-    """Represents a path in a 2-D grid."""
-    
+    """Represents a path in a 2-D Grid."""
+
     def __init__(self, grid):
         assert type(grid) == Grid
         self.grid = grid
@@ -89,12 +136,14 @@ class Path:
         return f'Path[{edges}]'
 
     def __str__(self):
-        return f'Path[]'
+        edges = ''.join([ e.get_letter_repr() for e in self.edges ])
+        return f'{edges}'
 
     def add_edge(self, edge):
-        assert type(edge) == Edge'
+        assert type(edge) == Edge
         assert edge in self.grid.edges
-        
+        self.edges.append(edge)
+
 
 if __name__ == "__main__":
     node1 = Node(3, 4)
@@ -107,8 +156,12 @@ if __name__ == "__main__":
     print(node1 == node2)
     print(node1 == node3)
     print(node2 == node3)
+    print(node2 + node3)
+    print(node2 - node3)
+    print(node2)
+    print(node3)
 
-    grid = Grid(3, 4)
+    grid = Grid(6, 6)
     print(grid)
 
     edge = Edge(node1, node3)
@@ -117,3 +170,15 @@ if __name__ == "__main__":
     print(grid)
     grid.remove_edge(edge)
     print(grid)
+
+    grid = Grid(3, 3)
+    grid.populate_edges()
+    print(grid)
+    print(len(grid.edges))
+
+    path = Path(grid)
+    path.add_edge(Edge(Node(0, 0), Node(1, 0)))
+    path.add_edge(Edge(Node(1, 0), Node(2, 0)))
+    path.add_edge(Edge(Node(2, 0), Node(2, 1)))
+    print(path)
+    print(path.get_extended_str())
