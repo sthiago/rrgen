@@ -126,9 +126,12 @@ class Grid:
 class Path:
     """Represents a path in a 2-D Grid."""
 
-    def __init__(self, grid):
+    def __init__(self, grid, start):
         assert type(grid) == Grid
+        assert type(start) == Node
+
         self.grid = grid
+        self.start = start
         self.edges = []
 
     def get_extended_str(self):
@@ -142,6 +145,12 @@ class Path:
     def add_edge(self, edge):
         assert type(edge) == Edge
         assert edge in self.grid.edges
+
+        if len(self.edges) == 0:
+            assert edge.src == self.start
+        else:
+            assert edge.src == self.edges[-1].dst
+
         self.edges.append(edge)
 
 
@@ -176,7 +185,7 @@ if __name__ == "__main__":
     print(grid)
     print(len(grid.edges))
 
-    path = Path(grid)
+    path = Path(grid, Node(0, 0))
     path.add_edge(Edge(Node(0, 0), Node(1, 0)))
     path.add_edge(Edge(Node(1, 0), Node(2, 0)))
     path.add_edge(Edge(Node(2, 0), Node(2, 1)))
