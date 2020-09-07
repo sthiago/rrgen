@@ -77,15 +77,14 @@ class Edge:
 
     def get_letter_repr(self):
         direction = self.dst - self.src
-        if direction == Node(1, 0):
-            return 'r'
-        elif direction == Node(0, 1):
-            return 'u'
-        elif direction == Node(-1, 0):
-            return 'l'
-        elif direction == Node(0, -1):
-            return 'd'
-        return '?'
+        translation = {
+            Node(1, 0)  : 'r',
+            Node(0, 1)  : 'u',
+            Node(-1, 0) : 'l',
+            Node(0, -1) : 'd',
+        }
+        return translation.get(direction, '?')
+
 
     def reverse(self):
         self.src, self.dst = self.dst, self.src
@@ -185,8 +184,11 @@ class Path:
         last_node = last_edge.dst
         neighbors = last_node.get_neighbors(self.grid)
         neighbors.remove(last_edge.src)
-        if self.start in neighbors:
-            neighbors.remove(self.start)
+
+        # I don't think this is necessary -- have to confirm, tho
+        # if self.start in neighbors:
+        #     neighbors.remove(self.start)
+
         assert len(neighbors) > 0
         pivot = random.choice(neighbors)
 
