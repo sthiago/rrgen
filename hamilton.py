@@ -203,19 +203,6 @@ class Path:
                 break
 
 
-
-            # global t
-            # global cell_size
-            # t.reset()
-            # t.speed('fastest')
-            # t.penup()
-            # t.setposition(0, 0)
-            # draw_bounding_box(t, cell_size, self.grid.height, self.grid.width)
-            # draw_path(t, str(self), cell_size)
-            # turtle.update()
-        print(len(self.visited), self.grid.get_size())
-
-
 if __name__ == "__main__":
     # node1 = Node(3, 4)
     # node2 = Node(3, 4)
