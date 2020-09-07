@@ -97,24 +97,29 @@ generate_path_recursive.best_len = None
 
 # These parameters that should come from the command line
 cell_size = 25 # Cell size in pixels
-wall_thickness = 100 # Wall thickness in pixels.
+wall_thickness = 1 # Wall thickness in pixels.
 map_width = 5 # Map width in cells
 map_height = 5 # Map height in cells
 num_holes = int(0.2 * map_height * map_width) # Maximum number of holes allowed
 
 t = create_turle(cell_size, wall_thickness, map_width, map_height)
 while True:
+    reset_turtle(t, wall_thickness)
+
     seed = random.randrange(sys.maxsize)
     random.seed(seed)
     print("Seed:", seed)
 
-    length = map_height * map_width
-    path = generate_path_recursive(length - num_holes)
+    # length = map_height * map_width
+    # path = generate_path_recursive(length - num_holes)
+    # path = 'uurulurrrrdllddldrrrulur' 6373683775801152486
+    # path = 'uurrurddlldrrruuuullldlu' 8520301203595211998
+
 
     print("Path:", path)
     draw_path(t, path, cell_size)
 
-    reset_turtle(t, wall_thickness)
+    break
 
 t.hideturtle()
 turtle.exitonclick()
