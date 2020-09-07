@@ -169,3 +169,24 @@ def draw_bounding_box(t, cell_size, map_height, map_width, padding=2):
 
     t.setposition(0, 0)
     t.pencolor('black')
+
+def create_turle(cell_size, wall_thickness, map_width, map_height):
+    t = turtle.Turtle()
+    s = t.getscreen()
+    s.setup(width=int(500 * map_height / map_width), height=500)
+    s.setworldcoordinates(-2, -2, map_width * cell_size + 4, map_height * cell_size + 4)
+    turtle.tracer(0, 0)
+    t.speed('fastest')
+    t.pensize(wall_thickness)
+    t.penup()
+    reset_turtle(t, wall_thickness)
+    return t
+
+def reset_turtle(t, wall_thickness):
+    t.reset()
+    t.speed('fastest')
+    t.pensize(wall_thickness)
+    t.penup()
+    t.setposition(0, 0)
+    turtle.update()
+    return t

@@ -83,6 +83,7 @@ class Edge:
             return 'd'
         return '?'
 
+
 class Grid:
     """A graph that represents a 2-D grid."""
 
@@ -122,6 +123,7 @@ class Grid:
                 node = Node(i, j)
                 for edge in node.get_edges_to_neighbors(grid):
                     self.add_edge(edge)
+
 
 class Path:
     """Represents a path in a 2-D Grid."""

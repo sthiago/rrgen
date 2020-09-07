@@ -3,7 +3,7 @@ import turtle
 import random
 import copy
 
-from draw import draw_path, draw_bounding_box
+from draw import draw_path, create_turle, reset_turtle
 
 def where_would_i_be(where_im_at, move):
     assert move in list('rldu')
@@ -94,56 +94,27 @@ def generate_path_recursive(length, path='r', where_ive_been=None, where_im_at=N
     return extended_path
 generate_path_recursive.best_len = None
 
+
 # These parameters that should come from the command line
+cell_size = 25 # Cell size in pixels
+wall_thickness = 100 # Wall thickness in pixels.
+map_width = 5 # Map width in cells
+map_height = 5 # Map height in cells
+num_holes = int(0.2 * map_height * map_width) # Maximum number of holes allowed
 
-# Cell size in pixels
-cell_size = 25
-
-# Map width in cells
-map_width = 10
-
-# Map height in cells
-map_height = 10
-
-# Number of holes
-num_holes = 10
-
-# Wall thickness in pixels.
-wall_thickness = 1
-
-# screen = turtle.getscreen()
-
-t = turtle.Turtle()
-s = t.getscreen()
-s.setup(width=map_width * 50, height=map_height * 50)
-s.setworldcoordinates(-2, -2, map_width * cell_size + 4, map_height * cell_size + 4)
-turtle.tracer(0, 0)
-
+t = create_turle(cell_size, wall_thickness, map_width, map_height)
 while True:
     seed = random.randrange(sys.maxsize)
     random.seed(seed)
     print("Seed:", seed)
 
-    t.reset()
-    t.speed('fastest')
-    t.pensize(wall_thickness)
-    t.penup()
-
-    draw_bounding_box(t, cell_size, map_height, map_width)
     length = map_height * map_width
     path = generate_path_recursive(length - num_holes)
-
-    # if path == None:
-    #     continue
 
     print("Path:", path)
     draw_path(t, path, cell_size)
 
-    t.penup()
-    t.setposition(0, 0)
-    turtle.update()
-
-    # break
+    reset_turtle(t, wall_thickness)
 
 t.hideturtle()
 turtle.exitonclick()
