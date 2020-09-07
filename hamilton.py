@@ -104,13 +104,12 @@ class Grid:
 class Path:
     """Represents a path in a 2-D Grid."""
 
-    def __init__(self, grid, start=Node(0, 0), tolerance=0):
+    def __init__(self, grid, start=Node(0, 0)):
         assert type(grid) == Grid
         assert type(start) == Node
 
         self.grid = grid
         self.start = start
-        self.tolerance = tolerance
         self.edges = []
         self.visited = [start]
 
@@ -186,13 +185,19 @@ class Path:
         # Finally, put it all as the path
         self.edges = first_part + second_part
 
-    def build_path_method1(self):
+    def build_path_method1(self, tolerance=0.0):
+        """Build path randomly with backbiting
+
+        tolerance = max. percentage of holes accepted"""
+        assert type(tolerance) == float
+        assert 0.0 <= tolerance <= 1.0
+
         while len(self.visited) < self.grid.get_size():
             candidate = self.pick_next_node()
             if candidate:
                 last_node = self.get_last_node()
                 self.add_edge(Edge(last_node, candidate))
-            elif len(self.visited) < (1-self.tolerance) * self.grid.get_size():
+            elif len(self.visited) < (1.0-tolerance) * self.grid.get_size():
                 self.backbite()
             else:
                 break
@@ -266,7 +271,7 @@ if __name__ == "__main__":
 
         # length = map_height * map_width
         path = Path(grid)
-        path.build_path_method1()
+        path.build_path_method1(tolerance=0.05)
         path_str = str(path)
         print("Path:", path_str)
 
