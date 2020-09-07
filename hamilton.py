@@ -45,16 +45,6 @@ class Node:
                 neighbors.append(neighbor)
         return neighbors
 
-    def get_edges_to_neighbors(self, grid):
-        assert type(grid) == Grid
-        neighbors = self.get_neighbors(grid)
-        edges = []
-        for n in neighbors:
-            edges.append(Edge(self, n))
-            edges.append(Edge(n, self))
-        return edges
-
-
 class Edge:
     """Represents an edge in a 2-D grid graph."""
 
@@ -85,7 +75,6 @@ class Edge:
         }
         return translation.get(direction, '?')
 
-
     def reverse(self):
         self.src, self.dst = self.dst, self.src
 
@@ -98,17 +87,9 @@ class Grid:
 
         self.width = width
         self.height = height
-        # self.nodes = set()
-        self.edges = set()
 
     def __str__(self):
-        # nodes = ', '.join([ str(n) for n in self.nodes ])
-        edges = ', '.join([ str(e) for e in self.edges ])
-        return f'Grid({self.width}x{self.height})[{edges}]'
-
-    # def add_node(self, node):
-    #     assert type(node) == Node
-    #     self.nodes.add(node)
+        return f'Grid[{self.width}x{self.height}]'
 
     def get_size(self):
         return self.height * self.width
@@ -119,18 +100,6 @@ class Grid:
         assert not edge.dst.is_out_of_bounds(self)
 
         self.edges.add(edge)
-
-    def remove_edge(self, edge):
-        assert type(edge) == Edge
-        self.edges.remove(edge)
-
-    def populate_edges(self):
-        for i in range(self.width):
-            for j in range(self.height):
-                node = Node(i, j)
-                for edge in node.get_edges_to_neighbors(grid):
-                    self.add_edge(edge)
-
 
 class Path:
     """Represents a path in a 2-D Grid."""
@@ -155,7 +124,8 @@ class Path:
 
     def add_edge(self, edge):
         assert type(edge) == Edge
-        assert edge in self.grid.edges
+        assert not edge.src.is_out_of_bounds(self.grid)
+        assert not edge.dst.is_out_of_bounds(self.grid)
 
         if len(self.edges) == 0:
             assert edge.src == self.start
@@ -286,7 +256,6 @@ if __name__ == "__main__":
     # num_holes = int(0.2 * map_height * map_width) # Maximum number of holes allowed
 
     grid = Grid(map_width, map_height)
-    grid.populate_edges()
 
     t = create_turle(cell_size, wall_thickness, map_width, map_height)
     while True:
