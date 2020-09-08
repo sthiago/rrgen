@@ -45,6 +45,7 @@ class Node:
                 neighbors.append(neighbor)
         return neighbors
 
+
 class Edge:
     """Represents an edge in a 2-D grid graph."""
 
@@ -78,6 +79,7 @@ class Edge:
     def reverse(self):
         self.src, self.dst = self.dst, self.src
 
+
 class Grid:
     """A graph that represents a 2-D grid."""
 
@@ -100,6 +102,7 @@ class Grid:
         assert not edge.dst.is_out_of_bounds(self)
 
         self.edges.add(edge)
+
 
 class Path:
     """Represents a path in a 2-D Grid."""
