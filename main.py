@@ -3,16 +3,20 @@ import turtle
 import random
 import copy
 
-from draw import draw_path, draw_bounding_box
+from draw import draw_path, create_turle, reset_turtle
 
-def get_new_position(position, move):
+def where_would_i_be(where_im_at, move):
     assert move in list('rldu')
-    assert len(position) == 2
+    assert len(where_im_at) == 2
 
-    moves = { 'r': (1, 0), 'l': (-1, 0), 'u': (0, 1), 'd': (0, -1) }
-    move = moves[move]
-    new_position = tuple(sum(x) for x in zip(position, move))
-    return new_position
+    if move == 'r':
+        return (where_im_at[0]+1, where_im_at[1])
+    if move == 'l':
+        return (where_im_at[0]-1, where_im_at[1])
+    if move == 'u':
+        return (where_im_at[0], where_im_at[1]+1)
+    if move == 'd':
+        return (where_im_at[0], where_im_at[1]-1)
 
 def is_out_of_bounds(position, map_height, map_width):
     w, h = map_width, map_height
@@ -25,28 +29,16 @@ def is_out_of_bounds(position, map_height, map_width):
     # print (x, y)
     return True
 
-def build_visited_list(path, start=(0,0)):
-    visited = [start]
-    current_position = start
-    for move in path:
-        current_position = get_new_position(current_position, move)
-        visited.append(current_position)
-    return visited
-
-
-def gen_path_backtrack(length, path='r', visited=None, where_im_at=None):
-    if gen_path_backtrack.best_len == None:
-        gen_path_backtrack.best_len = len(path)
-    elif len(path) > gen_path_backtrack.best_len:
-        gen_path_backtrack.best_len = len(path)
-        gen_path_backtrack.moves_without_improvement = 0
+def generate_path_recursive(length, path='r', where_ive_been=None, where_im_at=None):
+    if generate_path_recursive.best_len == None:
+        generate_path_recursive.best_len = len(path)
+    elif len(path) > generate_path_recursive.best_len:
+        generate_path_recursive.best_len = len(path)
         print(
-            str(gen_path_backtrack.best_len).zfill(3),
+            str(generate_path_recursive.best_len).zfill(3),
             str(len(path)).zfill(3),
             path,
         )
-
-    gen_path_backtrack.moves_without_improvement += 0
 
     global t
     global cell_size
@@ -59,15 +51,15 @@ def gen_path_backtrack(length, path='r', visited=None, where_im_at=None):
 
 
     # List with position in the grid that i've already passed by.
-    if visited == None:
-        visited = [(0, 0)]
+    if where_ive_been == None:
+        where_ive_been = [(0, 0)]
 
     # TODO: This will change depending on the starting move
     if where_im_at == None:
         where_im_at = (1, 0)
 
     # Keep track of where I've been so as to not allow overlap
-    visited.append(where_im_at)
+    where_ive_been.append(where_im_at)
 
     # I think I need a stop condition here.
     # For now, the condition will just be a length
@@ -80,12 +72,12 @@ def gen_path_backtrack(length, path='r', visited=None, where_im_at=None):
     extended_path = None
     while len(possible_moves) > 0:
         candidate_move = possible_moves.pop()
-        where_id_be = get_new_position(where_im_at, candidate_move)
+        where_id_be = where_would_i_be(where_im_at, candidate_move)
 
         # print(path + candidate_move)
 
         # it'll overlap, skip it
-        if where_id_be in visited:
+        if where_id_be in where_ive_been:
             continue
 
         # it's out of bounds, skip it
@@ -93,66 +85,41 @@ def gen_path_backtrack(length, path='r', visited=None, where_im_at=None):
         if len(path) < length and is_out_of_bounds(where_id_be, map_height, map_width):
             continue
 
-        extended_path = gen_path_backtrack(length, path + candidate_move, copy.copy(visited), where_id_be)
+        extended_path = generate_path_recursive(length, path + candidate_move, copy.copy(where_ive_been), where_id_be)
 
         # if nothing went wrong furthen along, then we don't have to try anymore
         if extended_path != None:
             break
 
     return extended_path
-gen_path_backtrack.best_len = None
-gen_path_backtrack.moves_without_improvement = 0
+generate_path_recursive.best_len = None
+
 
 # These parameters that should come from the command line
+cell_size = 25 # Cell size in pixels
+wall_thickness = 1 # Wall thickness in pixels.
+map_width = 5 # Map width in cells
+map_height = 5 # Map height in cells
+num_holes = int(0.2 * map_height * map_width) # Maximum number of holes allowed
 
-# Cell size in pixels
-cell_size = 25
-
-# Map width in cells
-map_width = 30
-
-# Map height in cells
-map_height = 30
-
-# Number of holes
-num_holes = 167
-
-# Wall thickness in pixels.
-wall_thickness = 1
-
-# screen = turtle.getscreen()
-
-t = turtle.Turtle()
-s = t.getscreen()
-s.setup(width=500, height=500)
-s.setworldcoordinates(-2, -2, map_width * cell_size + 4, map_height * cell_size + 4)
-turtle.tracer(0, 0)
-
+t = create_turle(cell_size, wall_thickness, map_width, map_height)
 while True:
+    reset_turtle(t, wall_thickness)
+
     seed = random.randrange(sys.maxsize)
     random.seed(seed)
     print("Seed:", seed)
 
-    t.reset()
-    t.speed('fastest')
-    t.pensize(wall_thickness)
-    t.penup()
+    # length = map_height * map_width
+    # path = generate_path_recursive(length - num_holes)
+    # path = 'uurulurrrrdllddldrrrulur' 6373683775801152486
+    # path = 'uurrurddlldrrruuuullldlu' 8520301203595211998
 
-    draw_bounding_box(t, cell_size, map_height, map_width)
-    length = map_height * map_width
-    path = gen_path_backtrack(length - num_holes)
-
-    # if path == None:
-    #     continue
 
     print("Path:", path)
     draw_path(t, path, cell_size)
 
-    t.penup()
-    t.setposition(0, 0)
-    turtle.update()
-
-    # break
+    break
 
 t.hideturtle()
 turtle.exitonclick()
