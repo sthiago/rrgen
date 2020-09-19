@@ -1,9 +1,4 @@
-import sys
-import png
-import random
-
-from colors import Colors
-from core import Grid, Edge, Node, Path
+from core import Grid, Node, Path
 
 
 class Drawer:
@@ -337,55 +332,3 @@ class Drawer:
         x = self.padding
         y = self.padding - len(link) - 1
         self.draw_pattern((x, y), link, color)
-
-
-# w, h = calculate_image_dimensions(Grid(33, 17), 50, 5)
-# img = [[0] * w for _ in range(h)]
-
-# for j in range(len(img)):
-#     for i in range(len(img[j])):
-#         if 100 <= i <= 500 and 100 <= j <= 150:
-#             img[j][i] = 4
-
-# draw_edge(Edge(Node(1, 1), Node(10, 1)))
-
-cell_size = 19
-wall_thickness = 1
-map_width = 40
-map_height = 20
-
-grid = Grid(map_width, map_height)
-drawer = Drawer(grid, cell_size, wall_thickness, 32)
-
-seed = random.randrange(sys.maxsize)
-random.seed(seed)
-print("Seed:", seed)
-
-path = Path(grid)
-path.build_path_method1()
-path_str = str(path)
-print("Path:", path_str)
-
-drawer.draw_path(path, 1)
-
-
-# drawer.draw_all_walls(Node(0, 0), 1)
-# drawer.draw_all_walls(Node(1, 0), 1)
-# drawer.draw_all_walls(Node(2, 0), 1)
-# drawer.draw_all_walls(Node(0, 1), 1)
-# drawer.draw_all_walls(Node(1, 1), 1)
-# drawer.draw_all_walls(Node(2, 1), 1)
-# drawer.draw_all_walls(Node(0, 2), 1)
-# drawer.draw_all_walls(Node(1, 2), 1)
-# drawer.draw_all_walls(Node(2, 2), 1)
-
-
-img = drawer.img
-img.reverse()
-
-palette = [ (0, 0, 0, 255), Colors.blue.value, Colors.red.value ]
-w = png.Writer(len(img[0]), len(img), palette=palette, bitdepth=8)
-f1 = open('png.png', 'wb')
-f2 = open('/home/sthiago/SteamWA/User/SavedLevels/png.png', 'wb')
-w.write(f1, img)
-w.write(f2, img)
