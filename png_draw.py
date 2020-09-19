@@ -50,6 +50,18 @@ class Drawer:
                 for j in range(y, y + length):
                     self.img[j][i] = color
 
+    def draw_pattern(self, start, pattern, color):
+        assert type(start) == tuple
+        assert type(pattern) == list
+        assert type(color) == int
+
+        x, y = start
+        pattern.reverse()
+        for j in range(len(pattern)):
+            for i in range(len(pattern[j])):
+                if int(pattern[j][i]) != 0:
+                    self.img[y + j][x + i] = color
+
     def draw_left_wall(self, node, color):
         assert type(node) == Node
         assert type(color) == int
@@ -142,6 +154,76 @@ class Drawer:
             self.draw_right_wall(end_node, color)
             self.draw_bottom_wall(end_node, color)
 
+    def draw_rd_arrow(self, node, color):
+        assert type(node) == Node
+
+        arrow = [
+            '11111100',
+            '00000100',
+            '00000100',
+            '00000100',
+            '00011111',
+            '00001110',
+            '00000100',
+        ]
+
+        x = self.padding + (node.x + 1) * self.cell_size - len(arrow[0]) - 1
+        y = self.padding + (node.y + 1) * self.cell_size - len(arrow) - 2
+        self.draw_pattern((x, y), arrow, color)
+
+    def draw_ul_arrow(self, node, color):
+        assert type(node) == Node
+
+        arrow = [
+            '0010000',
+            '0110000',
+            '1111111',
+            '0110001',
+            '0010001',
+            '0000001',
+            '0000001',
+            '0000001',
+        ]
+
+        x = self.padding + (node.x + 1) * self.cell_size - len(arrow[0]) - 2
+        y = self.padding + (node.y + 1) * self.cell_size - len(arrow) - 1
+        self.draw_pattern((x, y), arrow, color)
+
+    def draw_ld_arrow(self, node, color):
+        assert type(node) == Node
+
+        arrow = [
+            '00111111',
+            '00100000',
+            '00100000',
+            '00100000',
+            '11111000',
+            '01110000',
+            '00100000',
+        ]
+
+        x = self.padding + node.x * self.cell_size + self.wall_thickness + 1
+        y = self.padding + (node.y + 1) * self.cell_size - len(arrow) - 2
+        self.draw_pattern((x, y), arrow, color)
+
+    def draw_ur_arrow(self, node, color):
+        assert type(node) == Node
+
+        arrow = [
+            '0000100',
+            '0000110',
+            '1111111',
+            '1000110',
+            '1000100',
+            '1000000',
+            '1000000',
+            '1000000',
+        ]
+
+        x = self.padding + node.x * self.cell_size + self.wall_thickness + 2
+        y = self.padding + (node.y + 1) * self.cell_size - len(arrow) - 1
+        self.draw_pattern((x, y), arrow, color)
+
     def draw_s(self, node, color):
         assert type(node) == Node
 
@@ -160,7 +242,6 @@ class Drawer:
         # draw vertical lines
         self.draw_line((x + h_padding, y + h_step + v_padding), h_step, 'vertical', color)
         self.draw_line((x + h_padding + h_line_len - self.wall_thickness, y + v_padding), h_step, 'vertical', color)
-
 
     def draw_f(self, node, color):
         assert type(node) == Node
@@ -192,12 +273,14 @@ class Drawer:
         elif move == 'rd':
             self.draw_top_wall(node, color)
             self.draw_right_wall(node, color)
+            self.draw_rd_arrow(node, color)
         elif move == 'ru':
             self.draw_bottom_wall(node, color)
             self.draw_right_wall(node, color)
         elif move == 'ld':
             self.draw_top_wall(node, color)
             self.draw_left_wall(node, color)
+            self.draw_ld_arrow(node, color)
         elif move == 'lu':
             self.draw_bottom_wall(node, color)
             self.draw_left_wall(node, color)
@@ -213,9 +296,11 @@ class Drawer:
         elif move == 'ur':
             self.draw_top_wall(node, color)
             self.draw_left_wall(node, color)
+            self.draw_ur_arrow(node, color)
         elif move == 'ul':
             self.draw_top_wall(node, color)
             self.draw_right_wall(node, color)
+            self.draw_ul_arrow(node, color)
 
     def draw_path(self, path, color):
         assert type(path) == Path
