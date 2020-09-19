@@ -1,5 +1,34 @@
 import argparse
 
+def query_yes_no(question):
+    while True:
+        print(question + ' (yes/no) ', end='')
+        choice = input().lower().strip()
+        if choice == 'yes':
+            return True
+        elif choice == 'no':
+            return False
+
+def assert_is_positive(value):
+    try:
+        value = int(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"invalid int value: '{value}'")
+
+    if value <= 0:
+        raise argparse.ArgumentTypeError(f"must be a positive integer: '{value}'")
+    return value
+
+def assert_is_non_negative(value):
+    try:
+        value = int(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"invalid int value: '{value}'")
+
+    if value < 0:
+        raise argparse.ArgumentTypeError(f"must be a non-negative integer: '{value}'")
+    return value
+
 
 parser = argparse.ArgumentParser(
     description='Generates a rope race map for the game Worms Armageddon')
@@ -29,19 +58,19 @@ parser.add_argument('--hide-github',
     action='store_true')
 parser.add_argument('--cell-size',
     help='The size of each square cell in pixels (default: 200)',
-    type=int, default=200)
+    type=assert_is_positive, default=200)
 parser.add_argument('--wall-thickness',
     help='The thickness of the wall in pixels (default: 5)',
-    type=int, default=5)
+    type=assert_is_positive, default=5)
 parser.add_argument('--width',
     help='The width of the map in number of cells/squares (default: 30)',
-    type=int, default=30)
+    type=assert_is_positive, default=30)
 parser.add_argument('--height',
     help='The height of the map in number of cells/squares (default: 20)',
-    type=int, default=20)
+    type=assert_is_positive, default=20)
 parser.add_argument('--padding',
     help='The padding around the whole map in pixels (default: 32)',
-    type=int, default=32)
+    type=assert_is_non_negative, default=32)
 parser.add_argument('--seed',
     help='The seed used to generate the map',
     type=int)
@@ -72,13 +101,3 @@ start_group.add_argument('--start-at',
     'X and Y must be within boundaries (counted in cells/squares, not pixels): '
     '0 <= X < WIDTH and 0 <= Y < HEIGHT',
     nargs=2, metavar=('X', 'Y'), type=int)
-
-
-def query_yes_no(question):
-    while True:
-        print(question + ' (yes/no) ', end='')
-        choice = input().lower().strip()
-        if choice == 'yes':
-            return True
-        elif choice == 'no':
-            return False
