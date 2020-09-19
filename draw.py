@@ -2,17 +2,28 @@ from core import Grid, Node, Path
 
 
 class Drawer:
-    def __init__(self, grid, cell_size, wall_thickness, padding):
+    def __init__(self, grid, cell_size, wall_thickness, padding,
+        hide_arrows, hide_start, hide_finish, hide_github):
+
         assert type(grid) == Grid
         assert type(cell_size) == int
         assert type(wall_thickness) == int
         assert type(padding) == int
+        assert type(hide_arrows) == bool
+        assert type(hide_start) == bool
+        assert type(hide_finish) == bool
+        assert type(hide_github) == bool
         assert wall_thickness >= 1
 
         self.grid = grid
         self.cell_size = cell_size
         self.wall_thickness = wall_thickness
         self.padding = padding
+
+        self.hide_arrows = hide_arrows
+        self.hide_start = hide_start
+        self.hide_finish = hide_finish
+        self.hide_github = hide_github
 
         self.img_width, self.img_height = self.get_image_dimensions()
         assert self.img_width >= 640
@@ -154,6 +165,9 @@ class Drawer:
     def draw_rd_arrow(self, node, color):
         assert type(node) == Node
 
+        if self.hide_arrows:
+            return
+
         arrow = [
             '11111100',
             '00000100',
@@ -170,6 +184,9 @@ class Drawer:
 
     def draw_ul_arrow(self, node, color):
         assert type(node) == Node
+
+        if self.hide_arrows:
+            return
 
         arrow = [
             '0010000',
@@ -189,6 +206,9 @@ class Drawer:
     def draw_ld_arrow(self, node, color):
         assert type(node) == Node
 
+        if self.hide_arrows:
+            return
+
         arrow = [
             '00111111',
             '00100000',
@@ -205,6 +225,9 @@ class Drawer:
 
     def draw_ur_arrow(self, node, color):
         assert type(node) == Node
+
+        if self.hide_arrows:
+            return
 
         arrow = [
             '0000100',
@@ -224,6 +247,9 @@ class Drawer:
     def draw_s(self, node, color):
         assert type(node) == Node
 
+        if self.hide_start:
+            return
+
         x = node.x * self.cell_size + self.padding + self.wall_thickness
         y = node.y * self.cell_size + self.padding + self.wall_thickness
 
@@ -242,6 +268,9 @@ class Drawer:
 
     def draw_f(self, node, color):
         assert type(node) == Node
+
+        if self.hide_finish:
+            return
 
         x = node.x * self.cell_size + self.padding + self.wall_thickness
         y = node.y * self.cell_size + self.padding + self.wall_thickness
@@ -319,6 +348,11 @@ class Drawer:
         self.draw_bottom_wall(node, color)
 
     def draw_link(self, color):
+        assert type(color) == int
+
+        if self.hide_github:
+            return
+
         # Font: Berkelium 1541
         link = [
             '00001010010000000100000000000000000000000000010010001000000000000000000000000000000000000',
