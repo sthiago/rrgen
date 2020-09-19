@@ -1,8 +1,4 @@
-import sys
-import turtle
 import random
-
-from draw import draw_path, create_turle, reset_turtle, draw_bounding_box
 
 class Node:
     """Represents a node in 2-D Grid. """
@@ -204,74 +200,3 @@ class Path:
                 self.backbite()
             else:
                 break
-
-
-if __name__ == "__main__":
-    # node1 = Node(3, 4)
-    # node2 = Node(3, 4)
-    # node3 = Node(5, 5)
-
-    # print(node1)
-    # print(node2)
-    # print(node3)
-    # print(node1 == node2)
-    # print(node1 == node3)
-    # print(node2 == node3)
-    # print(node2 + node3)
-    # print(node2 - node3)
-    # print(node2)
-    # print(node3)
-
-    # grid = Grid(6, 6)
-    # print(grid)
-
-    # edge = Edge(node1, node3)
-
-    # grid.add_edge(edge)
-    # print(grid)
-    # grid.remove_edge(edge)
-    # print(grid)
-
-    # grid = Grid(3, 3)
-    # grid.populate_edges()
-    # print(grid)
-    # print(len(grid.edges))
-
-    # path = Path(grid, Node(0, 0))
-    # path.add_edge(Edge(Node(0, 0), Node(1, 0)))
-    # path.add_edge(Edge(Node(1, 0), Node(2, 0)))
-    # path.add_edge(Edge(Node(2, 0), Node(2, 1)))
-    # print(path)
-    # print(path.get_extended_str())
-
-    cell_size = 25 # Cell size in pixels
-    wall_thickness = 1 # Wall thickness in pixels. ?? fixme
-    map_width = 40 # Map width in cells
-    map_height = 20 # Map height in cells
-    # num_holes = int(0.2 * map_height * map_width) # Maximum number of holes allowed
-
-    grid = Grid(map_width, map_height)
-
-    t = create_turle(cell_size, wall_thickness, map_width, map_height)
-    while True:
-        seed = random.randrange(sys.maxsize)
-        # seed = 2361718422405573934
-        random.seed(seed)
-        print("Seed:", seed)
-
-        # length = map_height * map_width
-        path = Path(grid)
-        path.build_path_method1(tolerance=0.05)
-        path_str = str(path)
-        print("Path:", path_str)
-
-        reset_turtle(t, wall_thickness)
-        draw_bounding_box(t, cell_size, map_height, map_width)
-        draw_path(t, path_str, cell_size)
-
-        turtle.update()
-
-        # break
-
-    t.hideturtle()
-    turtle.exitonclick()
