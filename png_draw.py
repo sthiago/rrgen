@@ -2,7 +2,9 @@ import sys
 import png
 import random
 
+from colors import Colors
 from hamilton import Grid, Edge, Node, Path
+
 
 class Drawer:
     def __init__(self, grid, cell_size, wall_thickness, padding):
@@ -381,9 +383,7 @@ drawer.draw_path(path, 1)
 img = drawer.img
 img.reverse()
 
-palette = [
-    (0, 0, 0, 255), (255, 0, 0, 255), (0, 255, 0, 255), (0, 0, 255, 255),
-]
+palette = [ (0, 0, 0, 255), Colors.blue.value, Colors.red.value ]
 w = png.Writer(len(img[0]), len(img), palette=palette, bitdepth=8)
 f1 = open('png.png', 'wb')
 f2 = open('/home/sthiago/SteamWA/User/SavedLevels/png.png', 'wb')
