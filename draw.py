@@ -26,8 +26,13 @@ class Drawer:
         self.hide_github = hide_github
 
         self.img_width, self.img_height = self.get_image_dimensions()
-        assert self.img_width >= 640
-        assert self.img_height >= 32
+
+        # Force minimum dimensions
+        if self.img_width < 640:
+            self.img_width = 640
+        if self.img_height < 32:
+            self.img_height = 32
+
         self.img = [[0] * self.img_width for _ in range(self.img_height)]
 
     def get_image_dimensions(self):
