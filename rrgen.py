@@ -77,6 +77,13 @@ img = drawer.img
 img.reverse()
 palette = [ (0, 0, 0, 255), color.value ]
 w = png.Writer(len(img[0]), len(img), palette=palette, bitdepth=8)
-f = open(os.path.expanduser(args.output), 'wb')
+
+filename = os.path.expanduser(args.output)
+if os.path.isdir(filename):
+    filename += 'rrgen.png'
+if not filename.endswith('.png'):
+    filename += '.png'
+
+f = open(filename, 'wb')
 w.write(f, img)
-print(f'Created file {args.output}')
+print(f'Created file {filename}')
