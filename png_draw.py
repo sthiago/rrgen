@@ -3,7 +3,7 @@ import png
 import random
 
 from colors import Colors
-from hamilton import Grid, Edge, Node, Path
+from core import Grid, Edge, Node, Path
 
 
 class Drawer:
