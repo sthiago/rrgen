@@ -57,3 +57,15 @@ parser.add_argument('--path',
         'The path must be a string composed only of the letters: r, l, u, and d '
         '(meaning right, left, up, and down, respectively). '
         'If --path is passed, all options related to random generation are ignored')
+
+start_group = parser.add_mutually_exclusive_group()
+start_group.add_argument('--start',
+    help='Sets one of the four corners as the starting position '
+    '(default: bottom_left)',
+    choices=['bottom_left', 'top_left', 'top_right', 'bottom_right'],
+    default='bottom_left')
+start_group.add_argument('--start-at',
+    help='Sets the start at a custom location. '
+    'X and Y must be within boundaries (counted in cells/squares, not pixels): '
+    '0 <= X < WIDTH and 0 <= Y < HEIGHT',
+    nargs=2, metavar=('X', 'Y'), type=int)

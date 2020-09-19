@@ -5,7 +5,7 @@ import random
 
 from cli import parser
 from colors import Colors
-from core import Grid, Path
+from core import Grid, Path, Node
 from draw import Drawer
 
 args = parser.parse_args()
@@ -28,6 +28,21 @@ if args.color:
 else:
     color = random.choice(list(Colors))
 
+if args.start_at is None:
+    start_options = {
+        'bottom_left' : Node(0, 0),
+        'bottom_right' : Node(args.width-1, 0),
+        'top_left' : Node(0, args.height-1),
+        'top_right' : Node(args.width-1, args.height-1),
+    }
+    start_position = start_options[args.start]
+else:
+    x, y = args.start_at[0], args.start_at[1]
+    if not 0 <= x < args.width or not 0 <= y < args.height:
+        parser.error('Start position values for X and Y must be within boundaries: '
+            '0 <= X < WIDTH and 0 <= Y < HEIGHT')
+    start_position = Node(x, y)
+
 if args.seed is None:
     seed = random.randrange(sys.maxsize)
     random.seed(seed)
@@ -42,7 +57,7 @@ grid = Grid(args.width, args.height)
 drawer = Drawer(grid, args.cell_size, args.wall_thickness, args.padding,
     args.hide_arrows, args.hide_start, args.hide_finish, args.hide_github)
 
-path = Path(grid)
+path = Path(grid, start=start_position)
 path.build_path_method1()
 
 if args.show_path:
