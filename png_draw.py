@@ -99,6 +99,8 @@ class Drawer:
         assert type(move) == str
         assert move in list('lrud')
 
+        self.draw_s(start_node, color)
+
         if move == 'r':
             self.draw_left_wall(start_node, color)
             self.draw_top_wall(start_node, color)
@@ -121,6 +123,8 @@ class Drawer:
         assert type(move) == str
         assert move in list('lrud')
 
+        self.draw_f(end_node, color)
+
         if move == 'r':
             self.draw_right_wall(end_node, color)
             self.draw_top_wall(end_node, color)
@@ -137,6 +141,44 @@ class Drawer:
             self.draw_left_wall(end_node, color)
             self.draw_right_wall(end_node, color)
             self.draw_bottom_wall(end_node, color)
+
+    def draw_s(self, node, color):
+        assert type(node) == Node
+
+        x = node.x * self.cell_size + self.padding + self.wall_thickness
+        y = node.y * self.cell_size + self.padding + self.wall_thickness
+
+        v_padding = int(0.11 * self.cell_size)
+        h_padding = 2 * v_padding
+
+        # draw 3 horizontal lines
+        h_line_len = self.cell_size - 2 * h_padding - self.wall_thickness
+        h_step = (self.cell_size - v_padding) // 3
+        for i in range(3):
+            self.draw_line((x + h_padding, y + v_padding + i * h_step), h_line_len, 'horizontal', color)
+
+        # draw vertical lines
+        self.draw_line((x + h_padding, y + h_step + v_padding), h_step, 'vertical', color)
+        self.draw_line((x + h_padding + h_line_len - self.wall_thickness, y + v_padding), h_step, 'vertical', color)
+
+
+    def draw_f(self, node, color):
+        assert type(node) == Node
+
+        x = node.x * self.cell_size + self.padding + self.wall_thickness
+        y = node.y * self.cell_size + self.padding + self.wall_thickness
+
+        v_padding = int(0.11 * self.cell_size)
+        h_padding = 2 * v_padding
+
+        # draw left vertical line
+        v_line_len = 2 * ((self.cell_size - v_padding) // 3) + self.wall_thickness
+        self.draw_line((x + h_padding, y + v_padding), v_line_len, 'vertical', color)
+
+        # draw horizontal lines
+        h_line_len = self.cell_size - 2 * h_padding - self.wall_thickness
+        self.draw_line((x + h_padding, y + v_line_len + v_padding), h_line_len, 'horizontal', color)
+        self.draw_line((x + h_padding, y + int(0.7 * v_line_len)), int(0.9 * h_line_len), 'horizontal', color)
 
     def draw_cell(self, node, move, color):
         assert type(node) == Node
