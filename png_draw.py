@@ -313,6 +313,7 @@ class Drawer:
             self.draw_cell(node, path_str[i:i+2], color)
         node = path.edges[i+1].dst
         self.draw_end_cell(node, path_str[-1], color)
+        self.draw_link(color)
 
     def draw_all_walls(self, node, color):
         self.draw_left_wall(node, color)
@@ -320,7 +321,20 @@ class Drawer:
         self.draw_top_wall(node, color)
         self.draw_bottom_wall(node, color)
 
+    def draw_link(self, color):
+        # Font: Berkelium 1541
+        link = [
+            '00001010010000000100000000000000000000000000010010001000000000000000000000000000000000000',
+            '01100011011001010110000010010011010000010011011011000001100110010000010010010011001001100',
+            '10101010010101010101000100101010101000100110010010101010101010101000100100100101010101010',
+            '10101010010101010101000100101010101001000011010010101010101010101001000100100101011001010',
+            '01101001010100110110010010010010101010000110001010101001100110010010000100100011001101010',
+            '01000000000000000000000000000000000000000000000000000000000100000000000000000010000000000',
+        ]
 
+        x = self.padding
+        y = self.padding - len(link) - 1
+        self.draw_pattern((x, y), link, color)
 
 
 # w, h = calculate_image_dimensions(Grid(33, 17), 50, 5)
