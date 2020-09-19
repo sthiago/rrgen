@@ -23,9 +23,8 @@ if args.color:
     try:
         color = Colors[args.color]
     except KeyError:
-        print(f'Error: color \'{args.color}\' doesn\'t exist. '
+        parser.error(f'Color \'{args.color}\' doesn\'t exist. '
             'Try --colors to see all the available colors.')
-        exit(1)
 else:
     color = random.choice(list(Colors))
 
