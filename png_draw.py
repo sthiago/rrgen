@@ -158,9 +158,6 @@ class Drawer:
         assert type(node) == Node
 
         arrow = [
-            '00000000',
-            '00000000',
-            '00000000',
             '11111100',
             '00000100',
             '00000100',
@@ -171,7 +168,7 @@ class Drawer:
         ]
 
         x = self.padding + (node.x + 1) * self.cell_size - len(arrow[0]) - 1
-        y = self.padding + (node.y + 1) * self.cell_size - len(arrow[0]) - 1
+        y = self.padding + (node.y + 1) * self.cell_size - len(arrow) - 2
         self.draw_pattern((x, y), arrow, color)
 
     def draw_ul_arrow(self, node, color):
@@ -189,16 +186,13 @@ class Drawer:
         ]
 
         x = self.padding + (node.x + 1) * self.cell_size - len(arrow[0]) - 2
-        y = self.padding + (node.y + 1) * self.cell_size - len(arrow[0]) - 2
+        y = self.padding + (node.y + 1) * self.cell_size - len(arrow) - 1
         self.draw_pattern((x, y), arrow, color)
 
     def draw_ld_arrow(self, node, color):
         assert type(node) == Node
 
         arrow = [
-            '00000000',
-            '00000000',
-            '00000000',
             '00111111',
             '00100000',
             '00100000',
@@ -208,8 +202,8 @@ class Drawer:
             '00100000',
         ]
 
-        x = self.padding + node.x * self.cell_size + len(arrow[0]) - 1
-        y = self.padding + (node.y + 1) * self.cell_size - len(arrow[0]) - 1
+        x = self.padding + node.x * self.cell_size + self.wall_thickness + 1
+        y = self.padding + (node.y + 1) * self.cell_size - len(arrow) - 2
         self.draw_pattern((x, y), arrow, color)
 
     def draw_ur_arrow(self, node, color):
@@ -226,8 +220,8 @@ class Drawer:
             '1000000',
         ]
 
-        x = self.padding + node.x * self.cell_size + len(arrow[0])
-        y = self.padding + (node.y + 1) * self.cell_size - len(arrow[0]) - 2
+        x = self.padding + node.x * self.cell_size + self.wall_thickness + 2
+        y = self.padding + (node.y + 1) * self.cell_size - len(arrow) - 1
         self.draw_pattern((x, y), arrow, color)
 
     def draw_s(self, node, color):
