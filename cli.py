@@ -38,11 +38,11 @@ parser.add_argument('-o', '--output',
     default='./rrgen.png')
 parser.add_argument('-c', '--color',
     help='The color of the map. Can be any of the CSS color keywords except black. '
-    'Try --colors to see all available colors '
-    '(default: randomly chosen keyword color)')
+        'Try --colors to see all available colors '
+        '(default: randomly chosen keyword color)')
 parser.add_argument('--colors',
     help='Lists all available keyword colors. '
-    'A map is not generated if --colors is passed',
+        'A map is not generated if --colors is passed',
     action='store_true')
 parser.add_argument('--hide-arrows',
     help='Hides the arrows',
@@ -93,11 +93,11 @@ parser.add_argument('--path',
 start_group = parser.add_mutually_exclusive_group()
 start_group.add_argument('--start',
     help='Sets one of the four corners as the starting position '
-    '(default: bottom_left)',
+        '(default: bottom_left)',
     choices=['bottom_left', 'top_left', 'top_right', 'bottom_right'],
     default='bottom_left')
 start_group.add_argument('--start-at',
     help='Sets the start at a custom location. '
-    'X and Y must be within boundaries (counted in cells/squares, not pixels): '
-    '0 <= X < WIDTH and 0 <= Y < HEIGHT',
+        'X and Y must be within boundaries (counted in cells/squares, not pixels): '
+        '0 <= X < WIDTH and 0 <= Y < HEIGHT',
     nargs=2, metavar=('X', 'Y'), type=int)
