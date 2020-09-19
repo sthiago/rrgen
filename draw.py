@@ -33,6 +33,7 @@ class Drawer:
         if self.img_height < 32:
             self.img_height = 32
 
+    def init_image_array(self):
         self.img = [[0] * self.img_width for _ in range(self.img_height)]
 
     def get_image_dimensions(self):

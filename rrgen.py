@@ -64,6 +64,11 @@ grid = Grid(args.width, args.height)
 drawer = Drawer(grid, args.cell_size, args.wall_thickness, args.padding,
     args.hide_arrows, args.hide_start, args.hide_finish, args.hide_github)
 
+# Check image dimensions
+if drawer.img_width > 32512 or drawer.img_height > 32600:
+    parser.error('The generated map would exceed the maximum dimensions: 32512x32600')
+
+drawer.init_image_array()
 path = Path(grid, start=start_position)
 path.build_path_method1()
 
