@@ -67,7 +67,8 @@ class Drawer:
         pattern.reverse()
         for j in range(len(pattern)):
             for i in range(len(pattern[j])):
-                if int(pattern[j][i]) != 0:
+                if int(pattern[j][i]) != 0 \
+                    and 0 <= x < self.img_width and 0 <= y < self.img_height:
                     self.img[y + j][x + i] = color
 
     def draw_left_wall(self, node, color):
