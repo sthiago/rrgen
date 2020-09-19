@@ -51,6 +51,9 @@ parser.add_argument('--show-seed',
 parser.add_argument('--show-path',
     help='Show the string version of the generated path',
     action='store_true')
+parser.add_argument('--ignore-warning',
+    help='Supresses the warning about big maps',
+    action='store_true')
 parser.add_argument('--path',
     help='[NOT IMPLEMENTED] '
         'Use a string to generate a path instead of randomizing one. '
@@ -69,3 +72,13 @@ start_group.add_argument('--start-at',
     'X and Y must be within boundaries (counted in cells/squares, not pixels): '
     '0 <= X < WIDTH and 0 <= Y < HEIGHT',
     nargs=2, metavar=('X', 'Y'), type=int)
+
+
+def query_yes_no(question):
+    while True:
+        print(question + ' (yes/no) ', end='')
+        choice = input().lower().strip()
+        if choice == 'yes':
+            return True
+        elif choice == 'no':
+            return False

@@ -5,13 +5,12 @@ import sys
 import png
 import random
 
-from cli import parser
+from cli import parser, query_yes_no
 from colors import Colors
 from core import Grid, Path, Node
 from draw import Drawer
 
 args = parser.parse_args()
-print(args)
 
 # Show available colors
 if args.colors:
@@ -44,8 +43,8 @@ if args.start_at is None:
 else:
     x, y = args.start_at[0], args.start_at[1]
     if not 0 <= x < args.width or not 0 <= y < args.height:
-        parser.error('Start position values for X and Y must be within boundaries: '
-            '0 <= X < WIDTH and 0 <= Y < HEIGHT')
+        parser.error('Start position values for X and Y must be within '
+        'boundaries: 0 <= X < WIDTH and 0 <= Y < HEIGHT')
     start_position = Node(x, y)
 
 # Configure random seed
@@ -66,7 +65,20 @@ drawer = Drawer(grid, args.cell_size, args.wall_thickness, args.padding,
 
 # Check image dimensions
 if drawer.img_width > 32512 or drawer.img_height > 32600:
-    parser.error('The generated map would exceed the maximum dimensions: 32512x32600')
+    parser.error(
+        'The generated map would exceed the maximum dimensions: 32512x32600')
+
+# Warning on big maps
+if not args.ignore_warning and args.width > 45 and args.height > 45:
+    print('WARNING: A huge map is about to be generated! Because of the way '
+        'generation is implemented at the moment, the time to create the path '
+        'skyrockets really fast. A 50x50 map takes about 3 minutes to generate '
+        'on a 2010-ish i3 M350. And I gave up when I tried to generate an '
+        '80x80 map. Also, take into account that a 50x50 map could take around '
+        '30 minutes to finish playing alone.')
+    answer = query_yes_no('Continue anyway?')
+    if answer == False:
+        exit()
 
 drawer.init_image_array()
 path = Path(grid, start=start_position)
