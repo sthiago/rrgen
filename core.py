@@ -191,12 +191,10 @@ class Path:
         assert type(tolerance) == float
         assert 0.0 <= tolerance <= 1.0
 
-        while len(self.visited) < self.grid.get_size():
+        while len(self.visited) < (1.0-tolerance) * self.grid.get_size():
             candidate = self.pick_next_node()
             if candidate:
                 last_node = self.get_last_node()
                 self.add_edge(Edge(last_node, candidate))
-            elif len(self.visited) < (1.0-tolerance) * self.grid.get_size():
-                self.backbite()
             else:
-                break
+                self.backbite()
