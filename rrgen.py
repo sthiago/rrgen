@@ -31,6 +31,10 @@ if args.color:
 else:
     color = random.choice(list(Colors))
 
+# Prevent method 2 with start_at
+if args.method == 2 and args.start_at is not None:
+    parser.error('Method 2 can\'t be used with --start-at')
+
 # Configure start position
 if args.start_at is None:
     start_options = {
@@ -82,7 +86,11 @@ if not args.ignore_warning and args.width > 45 and args.height > 45:
 
 drawer.init_image_array()
 path = Path(grid, start=start_position)
-path.build_path_method1()
+
+if args.method == 1:
+    path.build_path_method1()
+elif args.method == 2:
+    path.build_path_method2()
 
 if args.show_path:
     path_str = str(path)

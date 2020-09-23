@@ -83,6 +83,13 @@ parser.add_argument('--show-path',
 parser.add_argument('--ignore-warning',
     help='Supresses the warning about big maps',
     action='store_true')
+parser.add_argument('--method',
+    help='Choses the method to generate the path. Method 1 randomly walks until'
+        ' it becomes trapped, then it performs backbite moves until it finds an'
+        ' exit. Method 2 first generates a naive path, then applies 20 backbites'
+        ' for each cell in the map to randomize the path. Method 2 can\' be used'
+        ' with --start-at. Both methods have similar execution times (default: 1)',
+    type=int, choices=[1, 2], default=1)
 parser.add_argument('--path',
     help='[NOT IMPLEMENTED] '
         'Use a string to generate a path instead of randomizing one. '
