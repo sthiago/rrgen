@@ -191,12 +191,55 @@ class Path:
         assert type(tolerance) == float
         assert 0.0 <= tolerance <= 1.0
 
-        while len(self.visited) < self.grid.get_size():
+        while len(self.visited) < (1.0-tolerance) * self.grid.get_size():
             candidate = self.pick_next_node()
             if candidate:
                 last_node = self.get_last_node()
                 self.add_edge(Edge(last_node, candidate))
-            elif len(self.visited) < (1.0-tolerance) * self.grid.get_size():
-                self.backbite()
             else:
+                self.backbite()
+
+    def is_along_border(self, node):
+        assert type(node) == Node
+
+        last_node = self.get_last_node()
+        diff = node - last_node
+        assert diff.x != 0 or diff.y != 0
+
+        # Horizontal neighbor: check the upper and lower nodes
+        if diff.x != 0:
+            upper = Node(node.x, node.y+1)
+            lower = Node(node.x, node.y-1)
+            return upper.is_out_of_bounds(self.grid) or upper in self.visited \
+                or lower.is_out_of_bounds(self.grid) or lower in self.visited
+
+        # Vertical neighbor: check the right and left nodes
+        elif diff.y != 0:
+            left = Node(node.x-1, node.y)
+            right = Node(node.x+1, node.y)
+            return left.is_out_of_bounds(self.grid) or left in self.visited \
+                or right.is_out_of_bounds(self.grid) or right in self.visited
+
+    def build_path_method2(self):
+        last_node = self.start
+
+        while True:
+            # If there are no non-visited neighbors, the path is done
+            neighbors = last_node.get_neighbors(self.grid)
+            non_visited_neighbors = [ n for n in neighbors if n not in self.visited ]
+            if len(non_visited_neighbors) == 0:
                 break
+
+            # Only consider neighbors that are along an edge
+            candidates = []
+            for neighbor in non_visited_neighbors:
+                if self.is_along_border(neighbor):
+                    candidates.append(neighbor)
+
+            choice = random.choice(candidates)
+            self.add_edge(Edge(last_node, choice))
+            last_node = choice
+
+        # Apply backbite 20 times per cell in the grid to randomize the path
+        for i in range(20 * self.grid.get_size()):
+            self.backbite()

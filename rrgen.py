@@ -31,6 +31,10 @@ if args.color:
 else:
     color = random.choice(list(Colors))
 
+# Prevent method 2 with start_at
+if args.method == 2 and args.start_at is not None:
+    parser.error('Method 2 can\'t be used with --start-at')
+
 # Configure start position
 if args.start_at is None:
     start_options = {
@@ -69,20 +73,24 @@ if drawer.img_width > 32512 or drawer.img_height > 32600:
         'The generated map would exceed the maximum dimensions: 32512x32600')
 
 # Warning on big maps
-if not args.ignore_warning and args.width > 45 and args.height > 45:
+if not args.ignore_warning and args.width > 40 and args.height > 40:
     print('WARNING: A huge map is about to be generated! Because of the way '
-        'generation is implemented at the moment, the time to create the path '
-        'skyrockets really fast. A 50x50 map takes about 3 minutes to generate '
-        'on a 2010-ish i3 M350. And I gave up when I tried to generate an '
-        '80x80 map. Also, take into account that a 50x50 map could take around '
-        '30 minutes to finish playing alone.')
+        'map generation is implemented, the time to create the path grows '
+        'really fast. Maps bigger than 40x40 can take several minutes to '
+        'generate. Also, take into account that a 50x50 map could take '
+        '30 minutes to finish playing with 1 player. You can suppress this '
+        'warning with --ignore-warning.')
     answer = query_yes_no('Continue anyway?')
     if answer == False:
         exit()
 
 drawer.init_image_array()
 path = Path(grid, start=start_position)
-path.build_path_method1()
+
+if args.method == 1:
+    path.build_path_method1()
+elif args.method == 2:
+    path.build_path_method2()
 
 if args.show_path:
     path_str = str(path)
