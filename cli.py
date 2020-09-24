@@ -29,6 +29,15 @@ def assert_is_non_negative(value):
         raise argparse.ArgumentTypeError(f"must be a non-negative integer: '{value}'")
     return value
 
+def check_tolerance(value):
+    try:
+        value = float(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"invalid float value: '{value}'")
+
+    if not 0.0 <= value <= 1.0:
+        raise argparse.ArgumentTypeError(f"must be between 0.0 and 1.0: '{value}'")
+    return value
 
 parser = argparse.ArgumentParser(
     description='Generates a rope race map for the game Worms Armageddon')
@@ -90,6 +99,12 @@ parser.add_argument('--method',
         ' for each cell in the map to randomize the path. Method 2 can\' be used'
         ' with --start-at. Both methods have similar execution times (default: 1)',
     type=int, choices=[1, 2], default=1)
+parser.add_argument('--tolerance',
+    help='Indicates the amount of "holes" in the map in percentage. For example, '
+        'a tolerance of 0.2 will accept a map with 20%% of holes instead of '
+        'backbiting when it becomes trapped. The holes are not uniformly '
+        'distributed, though. This options only works with method 1 (default: 0.0)',
+        type=check_tolerance, default=0.0)
 parser.add_argument('--path',
     help='[NOT IMPLEMENTED] '
         'Use a string to generate a path instead of randomizing one. '

@@ -35,6 +35,10 @@ else:
 if args.method == 2 and args.start_at is not None:
     parser.error('Method 2 can\'t be used with --start-at')
 
+# Prevents too high of a tolerance (that would result in an empty map)
+if args.method == 1 and (1.0-args.tolerance) * args.width * args.height < 1:
+    parser.error('Tolerance is too high. An empty map would be generated.')
+
 # Configure start position
 if args.start_at is None:
     start_options = {
@@ -88,7 +92,7 @@ drawer.init_image_array()
 path = Path(grid, start=start_position)
 
 if args.method == 1:
-    path.build_path_method1()
+    path.build_path_method1(args.tolerance)
 elif args.method == 2:
     path.build_path_method2()
 
