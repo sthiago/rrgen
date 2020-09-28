@@ -77,6 +77,41 @@ class Drawer:
                     and 0 <= x < self.img_width and 0 <= y < self.img_height:
                     self.img[y + j][x + i] = color
 
+    def fill(self, node, color):
+        assert type(node) == Node
+        assert type(color) == int
+        assert 0 <= color < 64
+
+        x = self.padding + node.x * self.cell_size
+        y = self.padding + node.y * self.cell_size
+
+        for i in range(x, x + self.cell_size):
+            for j in range(y, y + self.cell_size):
+                self.img[j][i] = color
+
+    def fill_holes(self, visited, color):
+        assert type(color) == int
+        assert 0 <= color < 64
+
+        for i in range(self.grid.width):
+            for j in range(self.grid.height):
+                node = Node(i, j)
+                if node not in visited:
+                    self.fill(node, color)
+
+    def draw_outer_walls(self, color):
+        assert type(color) == int
+        assert 0 <= color < 64
+
+        for i in range(self.grid.width):
+            self.draw_bottom_wall(Node(i, 0), color)
+            self.draw_top_wall(Node(i, self.grid.height-1), color)
+
+        for i in range(self.grid.height):
+            self.draw_left_wall(Node(0, i), color)
+            self.draw_right_wall(Node(self.grid.width-1, i), color)
+
+
     def draw_left_wall(self, node, color):
         assert type(node) == Node
         assert type(color) == int
@@ -108,7 +143,7 @@ class Drawer:
             self.padding + node.x * self.cell_size,
             self.padding + node.y * self.cell_size,
         )
-        self.draw_line(start, self.cell_size, 'horizontal', color)
+        self.draw_line(start, self.cell_size + self.wall_thickness, 'horizontal', color)
 
     def draw_top_wall(self, node, color):
         assert type(node) == Node
@@ -347,6 +382,9 @@ class Drawer:
         node = path.edges[i+1].dst
         self.draw_end_cell(node, path_str[-1], color)
         self.draw_link(color)
+        self.draw_outer_walls(color)
+        self.fill_holes(path.visited, color)
+
 
     def draw_all_walls(self, node, color):
         self.draw_left_wall(node, color)
