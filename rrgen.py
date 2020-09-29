@@ -66,8 +66,13 @@ else:
 if args.show_seed:
     print("Seed:", seed)
 
-# Start generation
-grid = Grid(args.width, args.height)
+# Start of path generation and drawing
+if args.path:
+    path = Path.from_string(args.path)
+    grid = path.grid
+else:
+    grid = Grid(args.width, args.height)
+
 drawer = Drawer(grid, args.cell_size, args.wall_thickness, args.padding,
     args.hide_arrows, args.hide_start, args.hide_finish, args.hide_github)
 
@@ -77,7 +82,8 @@ if drawer.img_width > 32512 or drawer.img_height > 32600:
         'The generated map would exceed the maximum dimensions: 32512x32600')
 
 # Warning on big maps
-if not args.ignore_warning and args.width > 40 and args.height > 40:
+if not args.path and not args.ignore_warning \
+    and args.width > 40 and args.height > 40:
     print('WARNING: A huge map is about to be generated! Because of the way '
         'map generation is implemented, the time to create the path grows '
         'really fast. Maps bigger than 40x40 can take several minutes to '
@@ -89,12 +95,13 @@ if not args.ignore_warning and args.width > 40 and args.height > 40:
         exit()
 
 drawer.init_image_array()
-path = Path(grid, start=start_position)
 
-if args.method == 1:
-    path.build_path_method1(args.tolerance)
-elif args.method == 2:
-    path.build_path_method2()
+if not args.path:
+    path = Path(grid, start=start_position)
+    if args.method == 1:
+        path.build_path_method1(args.tolerance)
+    elif args.method == 2:
+        path.build_path_method2()
 
 if args.show_path:
     path_str = str(path)
