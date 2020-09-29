@@ -321,7 +321,7 @@ class Drawer:
         h_padding = 2 * v_padding
 
         # draw left vertical line
-        v_line_len = 2 * ((self.cell_size - v_padding) // 3) + self.wall_thickness
+        v_line_len = 2 * ((self.cell_size - v_padding) // 3)
         self.draw_line((x + h_padding, y + v_padding), v_line_len, 'vertical', color)
 
         # draw horizontal lines
