@@ -243,3 +243,70 @@ class Path:
         # Apply backbite 20 times per cell in the grid to randomize the path
         for i in range(20 * self.grid.get_size()):
             self.backbite()
+
+    @staticmethod
+    def from_string(s):
+        """Return a path from a given custom string"""
+
+        # Check the string
+        for char in s:
+            if char not in "rlud":
+                exit("Error: The path string can only contain the characters: "
+                    "'r', 'l' , 'u', and 'd'")
+
+        # Initialize the path
+        visited = [Node(0, 0)]
+        edges = []
+
+        moves = {
+            'r': Node(1, 0),
+            'u': Node(0, 1),
+            'l': Node(-1, 0),
+            'd': Node(0, -1),
+        }
+
+        edges.append(Edge(Node(0, 0), Node(0, 0) + moves[s[0]]))
+        visited.append(Node(0, 0) + moves[s[0]])
+
+        # Build the path
+        for move in s[1:]:
+            src = edges[-1].dst
+            dst = src + moves[move]
+
+            # Check if path overlaps
+            if dst in visited:
+                exit("Error: The string provided creates a path that overlaps")
+
+            edges.append(Edge(src, dst))
+            visited.append(dst)
+
+        # Find the bounding grid
+        lowest, leftmost = 0, 0
+        for node in visited:
+            if node.x < leftmost:
+                leftmost = node.x
+            if node.y < lowest:
+                lowest = node.y
+
+        # Shift every coordinate
+        for edge in edges:
+            edge.src = Node(edge.src.x - leftmost, edge.src.y - lowest)
+            edge.dst = Node(edge.dst.x - leftmost, edge.dst.y - lowest)
+
+        for node in visited:
+            node = Node(node.x - leftmost, node.y - lowest)
+
+        highest, rightmost = 0, 0
+        for node in visited:
+            if node.x > rightmost:
+                rightmost = node.x
+            if node.y > highest:
+                highest = node.y
+
+        # The bounding grid
+        grid = Grid(rightmost+1, highest+1)
+
+        path = Path(grid, start=edges[0].src)
+        path.edges = edges
+        path.visited = visited
+        return path

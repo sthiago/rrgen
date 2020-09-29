@@ -106,8 +106,7 @@ parser.add_argument('--tolerance',
         'distributed, though. This options only works with method 1 (default: 0.0)',
         type=check_tolerance, default=0.0)
 parser.add_argument('--path',
-    help='[NOT IMPLEMENTED] '
-        'Use a string to generate a path instead of randomizing one. '
+    help='Use a string to generate a path instead of randomizing one. '
         'The path must be a string composed only of the letters: r, l, u, and d '
         '(meaning right, left, up, and down, respectively). '
         'If --path is passed, all options related to random generation are ignored')
