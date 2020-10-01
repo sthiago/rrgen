@@ -7,7 +7,17 @@ A rope-race map generator for the game Worms Armageddon (v3.6.28.0 and later)
 The only dependency is pypng
 
 ```
-pip install -r requirements.txt
+$ pip install -r requirements.txt
+```
+
+## Building a Windows binary
+
+If you don't want to use the provided Windows binary, you can build it yourself with pyinstaller.
+
+```
+$ pip instal -r requirements.txt
+$ pip install pyinstaller
+$ pyinstaller --onefile rrgen.py
 ```
 
 ## Usage
